@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+
+# build output
+build/
+dist/
+
+# environment
+.env
+.env.local
+.env.*.local
+
+# ide
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# os
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
+npm-debug.log*
+
+# test coverage
+coverage/
+
+# playwright
+playwright-report/
+test-results/
