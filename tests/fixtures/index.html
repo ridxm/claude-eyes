@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>claude-eyes test page</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; padding: 40px; background: #f5f5f5; }
+    .container { max-width: 600px; margin: 0 auto; }
+    h1 { color: #333; margin-bottom: 20px; }
+    .card { background: white; padding: 24px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .card h2 { font-size: 18px; margin-bottom: 16px; color: #555; }
+    label { display: block; margin-bottom: 8px; font-weight: 500; }
+    input[type="text"], input[type="password"] {
+      width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 12px;
+    }
+    button {
+      padding: 10px 20px; background: #007bff; color: white; border: none;
+      border-radius: 4px; cursor: pointer; margin-right: 8px; margin-bottom: 8px;
+    }
+    button:hover { background: #0056b3; }
+    button.secondary { background: #6c757d; }
+    button.danger { background: #dc3545; }
+    .status { padding: 12px; border-radius: 4px; margin-top: 12px; }
+    .status.success { background: #d4edda; color: #155724; }
+    .status.error { background: #f8d7da; color: #721c24; }
+    .hidden { display: none; }
+    #user-info { margin-top: 20px; padding: 16px; background: #e7f3ff; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>claude-eyes test page</h1>
+
+    <div class="card">
+      <h2>login form</h2>
+      <form id="login-form">
+        <label for="username">username</label>
+        <input type="text" id="username" name="username" placeholder="enter username">
+
+        <label for="password">password</label>
+        <input type="password" id="password" name="password" placeholder="enter password">
+
+        <button type="submit" id="login-btn">login</button>
+        <button type="button" class="secondary" id="clear-btn">clear</button>
+      </form>
+      <div id="login-status" class="status hidden"></div>
+    </div>
+
+    <div class="card">
+      <h2>console tests</h2>
+      <button id="log-info">log info</button>
+      <button id="log-warning" class="secondary">log warning</button>
+      <button id="log-error" class="danger">log error</button>
+    </div>
+
+    <div class="card">
+      <h2>network tests</h2>
+      <button id="fetch-success">fetch (success)</button>
+      <button id="fetch-fail" class="danger">fetch (404)</button>
+      <div id="fetch-status" class="status hidden"></div>
+    </div>
+
+    <div class="card">
+      <h2>dynamic content</h2>
+      <button id="show-content">show hidden content</button>
+      <button id="hide-content" class="secondary">hide content</button>
+      <div id="dynamic-content" class="hidden" style="margin-top: 12px; padding: 12px; background: #fff3cd; border-radius: 4px;">
+        this content was dynamically shown!
+      </div>
+    </div>
+
+    <div id="user-info" class="hidden">
+      <strong>logged in as:</strong> <span id="logged-user"></span>
+    </div>
+  </div>
+
+  <script>
+    // login form
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const status = document.getElementById('login-status');
+
+      if (username === 'test' && password === 'password') {
+        status.textContent = 'login successful!';
+        status.className = 'status success';
+        document.getElementById('user-info').classList.remove('hidden');
+        document.getElementById('logged-user').textContent = username;
+        console.log('user logged in:', username);
+      } else {
+        status.textContent = 'invalid credentials';
+        status.className = 'status error';
+        console.error('login failed for user:', username);
+      }
+      status.classList.remove('hidden');
+    });
+
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('login-status').classList.add('hidden');
+    });
+
+    // console tests
+    document.getElementById('log-info').addEventListener('click', () => {
+      console.log('this is an info message');
+    });
+
+    document.getElementById('log-warning').addEventListener('click', () => {
+      console.warn('this is a warning message');
+    });
+
+    document.getElementById('log-error').addEventListener('click', () => {
+      console.error('this is an error message');
+    });
+
+    // network tests
+    document.getElementById('fetch-success').addEventListener('click', async () => {
+      const status = document.getElementById('fetch-status');
+      try {
+        const res = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+        const data = await res.json();
+        status.textContent = `fetched: ${data.title.substring(0, 50)}...`;
+        status.className = 'status success';
+        console.log('fetch success:', data);
+      } catch (err) {
+        status.textContent = 'fetch failed: ' + err.message;
+        status.className = 'status error';
+        console.error('fetch error:', err);
+      }
+      status.classList.remove('hidden');
+    });
+
+    document.getElementById('fetch-fail').addEventListener('click', async () => {
+      const status = document.getElementById('fetch-status');
+      try {
+        const res = await fetch('https://jsonplaceholder.typicode.com/posts/99999');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        status.textContent = 'unexpected success';
+        status.className = 'status success';
+      } catch (err) {
+        status.textContent = 'fetch failed: ' + err.message;
+        status.className = 'status error';
+        console.error('expected fetch error:', err);
+      }
+      status.classList.remove('hidden');
+    });
+
+    // dynamic content
+    document.getElementById('show-content').addEventListener('click', () => {
+      document.getElementById('dynamic-content').classList.remove('hidden');
+      console.log('content shown');
+    });
+
+    document.getElementById('hide-content').addEventListener('click', () => {
+      document.getElementById('dynamic-content').classList.add('hidden');
+      console.log('content hidden');
+    });
+  </script>
+</body>
+</html>

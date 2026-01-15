@@ -29,19 +29,18 @@ class SessionManager {
   private browser: Browser | null = null;
   private context: BrowserContext | null = null;
   private page: Page | null = null;
-  private config: SessionConfig;
+  private config: SessionConfig | null = null;
 
   private consoleLogs: ConsoleLogEntry[] = [];
   private networkRequests: NetworkRequestEntry[] = [];
   private screenshots: Map<string, Buffer> = new Map();
   private domSnapshots: Map<string, string> = new Map();
 
-  constructor() {
-    this.config = getConfig();
-  }
-
   async ensureBrowser(): Promise<Page> {
     if (!this.browser) {
+      // Read config lazily so env vars can be set before first use
+      this.config = getConfig();
+
       this.browser = await chromium.launch({
         headless: this.config.headless,
       });
@@ -124,6 +123,9 @@ class SessionManager {
   }
 
   getConfig(): SessionConfig {
+    if (!this.config) {
+      this.config = getConfig();
+    }
     return this.config;
   }
 
