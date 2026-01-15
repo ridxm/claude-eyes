@@ -24,8 +24,12 @@
     "playwright",
     "visual-testing"
   ],
-  "author": "",
-  "license": "Apache-2.0",
+  "author": "ridxm",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ridxm/claude-eyes.git"
+  },
+  "license": "MIT",
   "engines": {
     "node": ">=18"
   },
