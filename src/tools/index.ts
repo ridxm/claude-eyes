@@ -3,6 +3,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 
 import * as navigation from './navigation.js';
 import * as interaction from './interaction.js';
@@ -178,45 +179,14 @@ const tools: Record<string, Tool> = {
   },
 };
 
-function zodToJsonSchema(schema: import('zod').ZodType): Record<string, unknown> {
-  // Simple conversion for MCP - just get the shape
-  const def = (schema as unknown as { _def: { shape?: () => Record<string, unknown> } })._def;
-  if (def?.shape) {
-    const shape = def.shape();
-    const properties: Record<string, unknown> = {};
-    const required: string[] = [];
-
-    for (const [key, value] of Object.entries(shape)) {
-      const fieldDef = (value as unknown as { _def: { typeName: string; description?: string; defaultValue?: unknown } })._def;
-      const isOptional = fieldDef?.typeName === 'ZodOptional' || fieldDef?.typeName === 'ZodDefault';
-
-      if (!isOptional) {
-        required.push(key);
-      }
-
-      properties[key] = {
-        type: 'string', // simplified
-        description: fieldDef?.description,
-      };
-    }
-
-    return {
-      type: 'object',
-      properties,
-      required: required.length > 0 ? required : undefined,
-    };
-  }
-
-  return { type: 'object' };
-}
-
 export function registerTools(server: Server) {
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
       tools: Object.entries(tools).map(([name, tool]) => ({
         name,
         description: tool.description,
-        inputSchema: zodToJsonSchema(tool.schema),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        inputSchema: zodToJsonSchema(tool.schema as any),
       })),
     };
   });
