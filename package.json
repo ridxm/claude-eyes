@@ -1,6 +1,6 @@
 {
   "name": "claude-eyes",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "MCP server that gives Claude Code eyes for frontend development",
   "type": "module",
   "main": "./build/index.js",
@@ -44,7 +44,7 @@
     "pixelmatch": "^7.1.0",
     "playwright": "^1.57.0",
     "sharp": "^0.34.5",
-    "zod": "^4.3.5",
+    "zod": "^3.25.76",
     "zod-to-json-schema": "^3.25.1"
   },
   "devDependencies": {

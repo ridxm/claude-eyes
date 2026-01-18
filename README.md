@@ -43,9 +43,13 @@ One message. Done.
 ---
 
 ## Install
+
+1. Install Playwright's browser:
 ```bash
-npm install claude-eyes
+npx playwright install chromium
 ```
+
+2. Add to your `.mcp.json`:
 ```json
 {
   "mcpServers": {
@@ -56,6 +60,8 @@ npm install claude-eyes
   }
 }
 ```
+
+3. Restart Claude Code. That's it.
 
 ---
 
@@ -68,7 +74,7 @@ npm install claude-eyes
 | **Interact** | `click`, `type`, `scroll`, `hover`, `navigate` |
 | **Verify** | `verify_no_errors`, `verify_element`, `verify_request_succeeded` |
 
-26 tools total. [Full reference →](./docs/tools.md)
+26 tools total.
 
 ---
 
