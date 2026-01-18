@@ -1,44 +1,42 @@
 # claude-eyes
+
 [![npm version](https://img.shields.io/npm/v/claude-eyes)](https://www.npmjs.com/package/claude-eyes)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-
-**Claude Code can write frontend code. But it can't see what it built.**
-
 **Give Claude Code eyes.**
- 
-An MCP server for autonomous visual QA - Claude can see screenshots, read console errors, and verify its own frontend fixes.
 
-Every time Claude makes a UI change, you have to manually check the browser and report back. "Does the button show up?" "Is there an error?" "Did the style change?"
+An MCP server that lets Claude see screenshots, read console errors, and verify its own frontend fixes autonomously.
 
-claude-eyes fixes this. It's an MCP server that gives Claude actual vision - screenshots it can see, console logs it can read, and interactions it can perform. 
-
-Now Claude can verify its own fixes. No more copy-pasting errors. No more "looks good to me" back-and-forth.
+<p align="center">
+  <img src="assets/claude-eyes.png" alt="claude-eyes in action" width="800">
+</p>
 
 ---
 
-## Before vs After
+## The Problem
 
-**Without claude-eyes:**
-```
-You: "Fix the login button"
-Claude: *writes code*
-Claude: "I've updated the button. Can you check if it works?"
-You: *opens browser, clicks around*
-You: "There's a console error"
-Claude: "Can you paste it?"
-... 5 more messages ...
-```
+Claude Code writes frontend code. But it can't see what it built.
 
-**With claude-eyes:**
-```
-You: "Fix the login button"
-Claude: *writes code*
-Claude: *takes screenshot, clicks button, checks console, verifies API*
-Claude: "Fixed. Button renders, click triggers auth API (200), no console errors."
-```
+Every time Claude makes a UI change, you become the middleman:
 
-One message. Done.
+- *"Does the button show up?"*
+- *"Is there a console error?"*
+- *"Did the layout break?"*
+
+You check the browser, copy-paste errors, describe what you see. Claude guesses what went wrong. Repeat.
+
+**This back-and-forth shouldn't exist.**
+
+## The Solution
+
+claude-eyes gives Claude actual vision:
+
+- **Screenshots** it can see (not file paths - actual images)
+- **Console logs** it can read
+- **Network requests** it can inspect
+- **Page interactions** it can perform
+
+Now when you say *"fix the login button"*, Claude writes the code, opens the browser, clicks the button, checks for errors, and confirms it works. One message. Done.
 
 ---
 
@@ -61,11 +59,11 @@ npx playwright install chromium
 }
 ```
 
-3. Restart Claude Code. That's it.
+3. Restart Claude Code.
 
 ---
 
-## What Claude can do now
+## What Claude Can Do
 
 | Capability | Tools |
 |------------|-------|
@@ -74,9 +72,43 @@ npx playwright install chromium
 | **Interact** | `click`, `type`, `scroll`, `hover`, `navigate` |
 | **Verify** | `verify_no_errors`, `verify_element`, `verify_request_succeeded` |
 
-26 tools total.
+26 tools total for autonomous visual QA.
 
 ---
+
+## Example
+
+**Without claude-eyes:**
+```
+You: "Fix the login button"
+Claude: *writes code*
+Claude: "I've updated the button. Can you check if it works?"
+You: *opens browser, clicks around*
+You: "There's a console error"
+Claude: "Can you paste it?"
+... 5 more messages ...
+```
+
+**With claude-eyes:**
+```
+You: "Fix the login button"
+Claude: *writes code, takes screenshot, clicks button, checks console*
+Claude: "Fixed. Button renders correctly, click triggers POST /api/auth (200), no console errors."
+```
+
+---
+
+## How It Works
+
+claude-eyes runs a headless Chromium browser via Playwright. When Claude calls a tool like `screenshot`, it captures the actual page and returns it as an image that Claude can see and reason about.
+
+The key insight: Claude receives **actual image data**, not file paths. It can look at your UI, notice visual bugs, and verify fixes without you lifting a finger.
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions and guidelines.
 
 ## License
 
