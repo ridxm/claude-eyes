@@ -100,4 +100,4 @@ The pre-commit hook will let you know if something's off with the format.
 2. Make your changes and run tests
 3. Open a PR against `main`
 
-We prefer PRs that focus on one thing at a time, and including tests for new functionality is always appreciated.
+Prefer PRs that focus on one thing at a time, and including tests for new functionality is always appreciated! Thank you.
